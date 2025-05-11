@@ -1,0 +1,37 @@
+{
+  "name": "tadiran-app",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "homepage": "https://github.com/snirSha/TadiranApp#readme",
+  "bugs": {
+    "url": "https://github.com/snirSha/TadiranApp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snirSha/TadiranApp.git"
+  },
+  "license": "ISC",
+  "author": "snir",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.30.1",
+    "mongoose": "^8.14.1",
+    "multer": "^1.4.5-lts.2",
+    "node-tesseract-ocr": "^2.2.1",
+    "nodemon": "^3.1.10",
+    "sharp": "^0.34.1",
+    "tesseract.js": "^6.0.1"
+  },
+  "devDependencies": {}
+}
