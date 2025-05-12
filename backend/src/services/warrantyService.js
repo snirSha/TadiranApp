@@ -4,7 +4,7 @@ const addWarranty = async (userId, warrantyData) => {
     // Create and save the warranty
     const warranty = new Warranty({
         userId,
-        customerInfo: warrantyData.customerInfo,
+        clienName: warrantyData.clienName,
         productInfo: warrantyData.productInfo,
         installationDate: warrantyData.installationDate,
         invoiceUpload: warrantyData.invoiceFilePath, // Save the file path in the warranty data
@@ -17,8 +17,8 @@ const addWarranty = async (userId, warrantyData) => {
 
 const getWarranties = async (userId) => {
     // Retrieve all warranties for the user
-    const warranties = await Warranty.find({ userId }).select("_id");
-    return warranties.map(warranty => warranty._id); // Return only the IDs
+    const warranties = await Warranty.find({ userId });
+    return warranties;
 };
 
 const getWarrantyById = async (userId, warrantyId) => {

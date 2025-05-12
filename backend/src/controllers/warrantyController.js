@@ -3,12 +3,12 @@ import { extractDates } from '../utils/ocrHelper.js';
 
 const addWarrantyController = async (req, res, next) => {
     const userId = req.user.id; // Get userId from the authenticated user
-    const { customerInfo, productInfo, installationDate } = req.body; // Extract fields from request body
+    const { clienName, productInfo, installationDate } = req.body; // Extract fields from request body
     const invoiceFilePath = req.file?.path; // Extract the file path of the uploaded invoice
     console.log("req.file", req.file);
     try {
         // Validate required fields
-        if (!customerInfo || !productInfo || !installationDate || !invoiceFilePath) {
+        if (!clienName || !productInfo || !installationDate || !invoiceFilePath) {
             return res.status(400).json({ message: "All fields are required, including the invoice file." });
         }
 
@@ -26,7 +26,7 @@ const addWarrantyController = async (req, res, next) => {
         // Add the warranty for the user
         const warranty = await addWarranty(userId,
              {
-                customerInfo,
+                clienName,
                 productInfo,
                 installationDate,
                 invoiceFilePath,

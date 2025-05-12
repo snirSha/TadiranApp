@@ -6,21 +6,13 @@ const warrantySchema = new mongoose.Schema({
         ref: "User", // References the User model
         required: true,
     },
-    customerInfo: {
-        name: String,
-        email: String,
-        phoneNumber: String,
-        address: String,
+    clienName: {
+        type: String,
+        required: true,
     },
     productInfo: {
-        type: {
-            type: String, // Product type (e.g., "Air Conditioner")
-            required: true,
-        },
-        code: {
-            type: String, // Product code (e.g., "AC12345")
-            required: true,
-        },
+        type: String, // Product type (e.g., "Air Conditioner model C137")
+        required: true,
     },
     installationDate: {
         type: Date,

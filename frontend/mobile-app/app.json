@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "icon": "",
+    "splash": {
+      "image": ""
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": ""
+      }
+    }
+  }
+}
