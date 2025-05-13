@@ -11,7 +11,7 @@ const SignUpScreen = ({ navigation }) => {
         try {
             setLoading(true);
             await authService.signup(formData.name, formData.email, formData.password);
-            navigation.navigate('LoginScreen');
+            navigation.navigate('Login');
         } catch (error) {
             setErrorMessage(error.message);
             {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
@@ -34,7 +34,7 @@ const SignUpScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: 'center', padding: 20 },
+    container: { flex: 1, justifyContent: 'center', padding: 20},
     errorText: { color: 'red', fontSize: 14, textAlign: 'center', marginTop: 10 },
 });
 

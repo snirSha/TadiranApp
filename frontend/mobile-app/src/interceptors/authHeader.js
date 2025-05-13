@@ -2,6 +2,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // This function retrieves the JWT token from AsyncStorage and adds it to the request headers
 const getAuthHeader = async (config) => {
+    if (!config || !config.url) {
+        console.warn('אזהרה: `config` או `url` אינם מוגדרים', config);
+        return {};
+    }
+
     try {
         // רשימת נתיבים ציבוריים שלא דורשים טוקן
         const publicEndpoints = ['/auth/login', '/auth/signup'];

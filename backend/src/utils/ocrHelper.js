@@ -2,7 +2,8 @@ import tesseract from 'node-tesseract-ocr';
 import sharp from 'sharp'; // For image preprocessing
 import path from 'path';
 import fs from 'fs';
-import moment from 'moment'; // calculate date with no time zone shoft
+import { updateWarrantyStatus, getWarrantyById } from '../services/warrantyService.js';
+import { broadcastUpdate } from "../wsServer.js";
 
 const config = { 
     lang: "eng", // Add "heb" if needed: "eng+heb"
@@ -62,4 +63,29 @@ const extractDates = async (inputPath) => {
     }
 };
 
-export { extractDates };
+// Process the OCR result and update the warranty status
+const processOCR = async (userId, warrantyId, invoiceFilePath) => {
+    try {
+        const dates = await extractDates(invoiceFilePath);
+        let extractedDate = dates && dates.length > 0 ? dates[0] : null;
+        let status = "Manual Review"; // ברירת מחדל אם OCR נכשל
+        
+        if (extractedDate) {
+            const warranty = await getWarrantyById(userId, warrantyId);
+            const diffDays = Math.abs((new Date(warranty.installationDate) - new Date(extractedDate)) / (1000 * 60 * 60 * 24));
+
+            status = (diffDays <= 21) ? "Approved" : "Rejected"; // הגדרת סטטוס בהתאם להפרש תאריכים
+        }
+
+        const updatedWarranty = await updateWarrantyStatus(warrantyId, { extractedDate, status }); // עדכון מסד הנתונים
+        // Broadcast the update to the client using websokets
+        broadcastUpdate(updatedWarranty);
+
+        console.log(`Warranty ID ${warrantyId} updated with status: ${status}`);
+    } catch (error) {
+        console.error("Error processing OCR:", error);
+    }
+};
+
+
+export { extractDates , processOCR};

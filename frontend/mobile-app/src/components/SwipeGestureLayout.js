@@ -1,20 +1,23 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
 const SwipeGestureLayout = ({ children, screen }) => {
     const navigation = useNavigation();
 
     // swipeRight - navigate to the warranty list
-    const swipeRight = Gesture.Swipe().direction(Gesture.Directions.RIGHT).onEnd(() => {
-        if (screen === "WarrantyForm") navigation.navigate("WarrantyList");
+    const swipeRight = Gesture.Pan().onEnd((event) => {
+        if (event.translationX > 50 && screen === "WarrantyForm") {
+            navigation.navigate("WarrantyList");
+        }
     });
-
-    // swipeLeft - navigate back 
-    const swipeLeft = Gesture.Swipe().direction(Gesture.Directions.LEFT).onEnd(() => {
-        if (screen === "WarrantyForm") navigation.navigate("Login");
-        if (screen === "WarrantyList") navigation.navigate("WarrantyForm");
+    // swipeLeft - navigate to the login screen or to the warranty form
+    const swipeLeft = Gesture.Pan().onEnd((event) => {
+        if (event.translationX < -50) {
+            if (screen === "WarrantyForm") navigation.navigate("Login");
+            if (screen === "WarrantyList") navigation.navigate("WarrantyForm");
+        }
     });
 
     return (

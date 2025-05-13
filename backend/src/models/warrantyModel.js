@@ -6,7 +6,7 @@ const warrantySchema = new mongoose.Schema({
         ref: "User", // References the User model
         required: true,
     },
-    clienName: {
+    clientName: {
         type: String,
         required: true,
     },
@@ -26,6 +26,11 @@ const warrantySchema = new mongoose.Schema({
         type: Date, // Store the extracted date (or null if not found)
         default: null,
     },
+    status: { 
+        type: String,
+        enum: ["Pending", "Approved", "Rejected", "Manual Review"],
+        default: "Pending" // default status
+    }
 });
 
 

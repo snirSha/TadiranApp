@@ -10,7 +10,7 @@ const api = axios.create({
 
 // Add a request interceptor to include the authorization header in every request
 api.interceptors.request.use(async (config) => {
-    const authHeader = await getAuthHeader();
+    const authHeader = await getAuthHeader(config);
     config.headers = {
         ...config.headers,  // Include existing headers
         ...authHeader       // Add the authorization header

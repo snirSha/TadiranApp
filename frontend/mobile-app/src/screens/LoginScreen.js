@@ -11,7 +11,7 @@ const LoginScreen = ({ navigation }) => {
         try {
             setLoading(true);
             await authService.login(formData.email, formData.password);
-            navigation.navigate('WarrantyListScreen');
+            navigation.navigate('WarrantyForm');
         } catch (error) {
             setErrorMessage(error.message);
         } finally {

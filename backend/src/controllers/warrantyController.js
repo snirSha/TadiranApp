@@ -1,46 +1,42 @@
-import {addWarranty, getWarranties, getWarrantyById, deleteWarrantyById} from "../services/warrantyService.js";
-import { extractDates } from '../utils/ocrHelper.js';
+import {addWarranty, getWarranties, getWarrantyById, deleteWarrantyById, updateWarrantyStatus} from "../services/warrantyService.js";
+import { processOCR } from '../utils/ocrHelper.js';
 
 const addWarrantyController = async (req, res, next) => {
     const userId = req.user.id; // Get userId from the authenticated user
-    const { clienName, productInfo, installationDate } = req.body; // Extract fields from request body
-    const invoiceFilePath = req.file?.path; // Extract the file path of the uploaded invoice
-    console.log("req.file", req.file);
-    try {
-        // Validate required fields
-        if (!clienName || !productInfo || !installationDate || !invoiceFilePath) {
-            return res.status(400).json({ message: "All fields are required, including the invoice file." });
-        }
+    const { clientName, productInfo, installationDate } = req.body; // Extract fields from request body
+    const invoiceFilePath = req.file ? req.file.path : null;// Extract the file path of the uploaded invoice
+  
+    if (!invoiceFilePath) {
+        return res.status(400).json({ message: "קובץ חשבונית לא הועלה כראוי" });
+    }
 
-        //Call ocrHelper to extract text from the invoice file pdf/image
-        let extractedDate = null;
-        try{
-            const dates = await extractDates(invoiceFilePath);
-            if(dates && dates.length > 0){
-                extractedDate = dates[0];//use first date found
-            }
-        }catch(error){
-            console.error("Error extracting date from invoice: ", error);
-        }
+    try {
 
         // Add the warranty for the user
         const warranty = await addWarranty(userId,
-             {
-                clienName,
+            {
+                clientName,
                 productInfo,
                 installationDate,
                 invoiceFilePath,
-                extractedDate
-             }
-              );
+                extractedDate: null,
+                status: "Pending"
+            }
+        );
+        
         res.status(201).json({
             message: "Warranty added successfully",
             warranty,
         });
+        
+        // Perform OCR to extract dates from the invoice and update status
+        setTimeout(() => processOCR(userId, warranty.id, invoiceFilePath), 3000);
+
     } catch (error) {
         next(error); // Pass the error to the middleware
     }
 }
+
 
 const getWarrantiesController = async (req, res, next) =>{
     const userId = req.user.id; // Get userId from the authenticated user

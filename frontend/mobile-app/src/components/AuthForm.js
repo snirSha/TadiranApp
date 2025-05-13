@@ -11,22 +11,38 @@ const AuthForm = ({ mode, onSubmit, loading }) => {
 
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
+
+        // אם המשתמש מילא את השדה, הסר את השגיאה לגמרי
+        setErrors((prev) => ({ ...prev, [field]: value.trim() ? null : prev[field] }));
     };
 
-    const handleBlur = (field) => {
-        setTouched((prev) => ({ ...prev, [field]: true }));
-        validateField(field);
-    };
+    // const handleBlur = (field) => { //Caused too many issues - I don't need it
+    //     if (!field) return;
+    //     setTouched((prev) => ({ ...prev, [field]: true }));
+    //     validateField(field);
+    //     console.log(`Error for ${field}:`, errors[field]); 
+    // };
 
-    const validateField = (field) => {
-        const rules = { email: validationRules.email, password: validationRules.password };
-        if (mode === 'signup') rules.name = validationRules.required;
-
-        const errorMessage = rules[field](formData[field]);
-        setErrors((prev) => ({ ...prev, [field]: errorMessage }));
-    };
+    // const validateField = (field) => {
+    //     if (!field) {// Check if field is valid
+    //         console.warn(`שדה לא תקף`, field);
+    //         return;
+    //     }
+        
+    //     const rules = { email: validationRules.email, password: validationRules.password };
+    //     if (mode === 'signup') rules.name = validationRules.required;
+    //     if (!rules[field] || typeof rules[field] !== 'function') {// Check if the rule is a function
+    //         console.warn(`rules[field] לא פונקציה:`, field);
+    //         return;
+    //     }
+    //     const errorMessage = rules[field](formData[field]) || '';
+    //     setErrors((prev) => ({ ...prev, [field]: errorMessage }));
+    // };
 
     const handleSubmit = () => {
+        //to show errors if the user tries to submit without filling the form
+        setTouched({ email: true, password: true, name: mode === 'signup' });
+
         const rules = { email: validationRules.email, password: validationRules.password };
         if (mode === 'signup') rules.name = validationRules.required;
 
@@ -46,27 +62,29 @@ const AuthForm = ({ mode, onSubmit, loading }) => {
                         label="שם משתמש"
                         value={formData.name}
                         onChangeText={(value) => handleChange('name', value)}
-                        onBlur={() => handleBlur('name')}
                         style={styles.input}
                     />
-                    {touched.name && errors.name && <Text style={styles.error}>{errors.name}</Text>}
+                    {touched.name && errors.name && typeof errors.name === 'string' && errors.name !== '' &&
+                    (
+                    <Text style={styles.error}>{errors.name}</Text>
+                    )}
                 </>
             )}
             <TextInput
                 label="אימייל"
                 value={formData.email}
                 onChangeText={(value) => handleChange('email', value)}
-                onBlur={() => handleBlur('email')}
                 style={styles.input}
             />
-            {touched.email && errors.email && <Text style={styles.error}>{errors.email}</Text>}
+            {touched.email && errors.email && errors.email !== null && errors.email.length > 0 && (
+                <Text style={styles.error}>{errors.email}</Text>
+            )}
 
             <TextInput
                 label="סיסמה"
                 value={formData.password}
                 onChangeText={(value) => handleChange('password', value)}
-                onBlur={() => handleBlur('password')}
-                secureTextEntry={!passwordVisible} // משנה את מצב ההצגה
+                secureTextEntry={!passwordVisible}
                 right={
                     <TextInput.Icon 
                         icon={passwordVisible ? 'eye-off' : 'eye'}
@@ -75,7 +93,10 @@ const AuthForm = ({ mode, onSubmit, loading }) => {
                 }
                 style={styles.input}
             />
-            {touched.password && errors.password && <Text style={styles.error}>{errors.password}</Text>}
+            {touched.password && errors.password && typeof errors.password === 'string' && errors.password !== '' && 
+            (
+            <Text style={styles.error}>{errors.password}</Text>
+            )}
 
             <Button mode="contained" onPress={handleSubmit} loading={loading}>
                 {mode === 'signup' ? 'הרשמה' : 'התחבר'}

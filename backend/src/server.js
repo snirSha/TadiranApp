@@ -5,10 +5,12 @@ import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js';
 import warrantyRoutes from './routes/warrantyRoutes.js';
 import errorHandler from './middleware/errorMiddleware.js';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors());//gives access to the API from the mobile app
 
 // Connect to MongoDB
 connectDB();
