@@ -1,4 +1,4 @@
-import {addWarranty, getWarranties, getWarrantyById, deleteWarrantyById, updateWarrantyStatus} from "../services/warrantyService.js";
+import {addWarranty, getWarranties, getWarrantyById, deleteWarrantyById} from "../services/warrantyService.js";
 import { processOCR } from '../utils/ocrHelper.js';
 
 const addWarrantyController = async (req, res, next) => {
@@ -28,7 +28,7 @@ const addWarrantyController = async (req, res, next) => {
             message: "Warranty added successfully",
             warranty,
         });
-        
+
         // Perform OCR to extract dates from the invoice and update status
         setTimeout(() => processOCR(userId, warranty.id, invoiceFilePath), 3000);
 

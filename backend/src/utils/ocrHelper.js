@@ -2,7 +2,7 @@ import tesseract from 'node-tesseract-ocr';
 import sharp from 'sharp'; // For image preprocessing
 import path from 'path';
 import fs from 'fs';
-import { updateWarrantyStatus, getWarrantyById } from '../services/warrantyService.js';
+import { updateWarrantyDateAndStatus, getWarrantyById } from '../services/warrantyService.js';
 import { broadcastUpdate } from "../wsServer.js";
 
 const config = { 
@@ -68,18 +68,20 @@ const processOCR = async (userId, warrantyId, invoiceFilePath) => {
     try {
         const dates = await extractDates(invoiceFilePath);
         let extractedDate = dates && dates.length > 0 ? dates[0] : null;
-        let status = "Manual Review"; // ברירת מחדל אם OCR נכשל
+        let status = "Pending"; // default
         
         if (extractedDate) {
             const warranty = await getWarrantyById(userId, warrantyId);
             const diffDays = Math.abs((new Date(warranty.installationDate) - new Date(extractedDate)) / (1000 * 60 * 60 * 24));
 
-            status = (diffDays <= 21) ? "Approved" : "Rejected"; // הגדרת סטטוס בהתאם להפרש תאריכים
+            status = (diffDays <= 21) ? "Approved" : "Rejected"; 
+        }else{
+            status = "Manual Review"; //Only if OCR couldn't exclude the date
         }
 
-        const updatedWarranty = await updateWarrantyStatus(warrantyId, { extractedDate, status }); // עדכון מסד הנתונים
-        // Broadcast the update to the client using websokets
-        broadcastUpdate(updatedWarranty);
+        const updatedWarranty = await updateWarrantyDateAndStatus(warrantyId, { extractedDate, status }); // עדכון מסד הנתונים
+        
+        broadcastUpdate(updatedWarranty);// Broadcast the update to the client using websokets
 
         console.log(`Warranty ID ${warrantyId} updated with status: ${status}`);
     } catch (error) {

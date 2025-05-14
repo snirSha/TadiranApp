@@ -35,9 +35,9 @@ const deleteWarrantyById = async (userId, warrantyId) => {
     return warranty;
 }
 
-const updateWarrantyStatus = async (warrantyId, updateFields) => {
+const updateWarrantyDateAndStatus = async (warrantyId, updateFields) => {
     return await Warranty.findByIdAndUpdate(warrantyId, updateFields, { new: true });
 };
 
 
-export { addWarranty, getWarranties, getWarrantyById, deleteWarrantyById, updateWarrantyStatus};
+export { addWarranty, getWarranties, getWarrantyById, deleteWarrantyById, updateWarrantyDateAndStatus};

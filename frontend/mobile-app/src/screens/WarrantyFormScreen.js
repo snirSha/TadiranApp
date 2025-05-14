@@ -10,6 +10,7 @@ import FloatingButton from '../components/FloatingButton';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import FileUpload from "../components/FileUpload";
+import theme from "../theme";
 
 const WarrantyFormScreen = () => {
     const { userToken } = useContext(AuthContext);
@@ -108,7 +109,7 @@ const WarrantyFormScreen = () => {
 
     return (
         // <SwipeGestureLayout screen="WarrantyForm">
-
+        <>
             <View style={styles.container}>
                 <TextInput
                     placeholder="שם לקוח"
@@ -116,7 +117,7 @@ const WarrantyFormScreen = () => {
                     onChangeText={(value) => handleChange('clientName', value)}
                     style={styles.input}
                 />
-                {errors.clientName && <Text style={styles.error}>{errors.clientName}</Text>}
+                {errors.clientName && <Text style={styles.errorText}>{errors.clientName}</Text>}
 
                 <TextInput
                     placeholder="מוצר"
@@ -124,7 +125,7 @@ const WarrantyFormScreen = () => {
                     onChangeText={(value) => handleChange('productInfo', value)}
                     style={styles.input}
                 />
-                {errors.productInfo && <Text style={styles.error}>{errors.productInfo}</Text>}
+                {errors.productInfo && <Text style={styles.errorText}>{errors.productInfo}</Text>}
 
                 {Platform.OS === 'web' ? (
                     <input
@@ -151,39 +152,33 @@ const WarrantyFormScreen = () => {
                     </>
                 )}
 
-                {errors.installationDate && <Text style={styles.error}>{errors.installationDate}</Text>}
+                {errors.installationDate && <Text style={styles.errorText}>{errors.installationDate}</Text>}
 
                 {/* using the fileUplod component */}
                 <FileUpload formData={formData} setFormData={setFormData} setErrors={setErrors}/>
-                {errors.invoiceUpload && <Text style={styles.error}>{errors.invoiceUpload}</Text>}
+                {errors.invoiceUpload && <Text style={styles.errorText}>{errors.invoiceUpload}</Text>}
                 
 
                 <Button mode="contained" onPress={handleSubmit} loading={loading} style={styles.submitButton}>
                     שמירת אחריות
                 </Button>
-                {errors.submitError && <Text style={styles.error}>{errors.submitError}</Text>}
+                {errors.submitError && <Text style={styles.errorText}>{errors.submitError}</Text>}
             
-                <FloatingButton title="לרשימת האחריות" onPress={() => navigation.navigate("WarrantyList")} />
+                
             </View>
-
+            <FloatingButton title="לרשימת האחריות" onPress={() => navigation.navigate("WarrantyList")} />
+        </>
         // </SwipeGestureLayout>
     );
 };
 
 const styles = StyleSheet.create({
-
-    container: { 
-        flex: 1, 
-        justifyContent: 'center',
-        padding: 20 ,
-        writingDirection: "rtl", // הגדרת הכיוון לטופס
-    },
+    ...theme.styles,
     input: { 
         marginBottom: 10,
         textAlign: "right", // טקסט ייכתב מימין לשמאל 
         alignSelf: "stretch", // הקלט יתפרס לרוחב הטופס
     },
-    error: { color: 'red', fontSize: 12, marginBottom: 10 },
     fileName: { fontSize: 14, marginBottom: 5 },
     iconButton: {backgroundColor: '#f0f0f0',padding: 10,borderRadius: 5,alignSelf: 'center',marginVertical: 10},
     submitButton: {
