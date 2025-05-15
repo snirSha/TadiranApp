@@ -18,12 +18,14 @@ if(!fs.existsSync(uploadPath)){
 // multer storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        console.log("Headers received:", req.headers);
-        console.log("Received file:", req.file);
-        console.log("Received files:", req.files); // ✅ בדוק גם אם `multer` מזהה `files` במקום `file`
-        console.log("Saving file to:", uploadPath);
-        cb(null, uploadPath)
-    },
+        console.log("Received file:", file);
+        if (!file) {
+            console.error("❌ No file received!");
+            return cb(new Error("No file received"), null);
+        }
+        cb(null, uploadPath);
+    }
+    ,
     filename: (req, file, cb) => {
         console.log("Generated Filename:", `${Date.now()}-${file.originalname}`);
         cb(null, `${Date.now()}-${file.originalname}`)

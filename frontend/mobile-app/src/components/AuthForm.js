@@ -16,29 +16,6 @@ const AuthForm = ({ mode, onSubmit, loading }) => {
         setErrors((prev) => ({ ...prev, [field]: value.trim() ? null : prev[field] }));
     };
 
-    // const handleBlur = (field) => { //Caused too many issues - I don't need it
-    //     if (!field) return;
-    //     setTouched((prev) => ({ ...prev, [field]: true }));
-    //     validateField(field);
-    //     console.log(`Error for ${field}:`, errors[field]); 
-    // };
-
-    // const validateField = (field) => {
-    //     if (!field) {// Check if field is valid
-    //         console.warn(`שדה לא תקף`, field);
-    //         return;
-    //     }
-        
-    //     const rules = { email: validationRules.email, password: validationRules.password };
-    //     if (mode === 'signup') rules.name = validationRules.required;
-    //     if (!rules[field] || typeof rules[field] !== 'function') {// Check if the rule is a function
-    //         console.warn(`rules[field] לא פונקציה:`, field);
-    //         return;
-    //     }
-    //     const errorMessage = rules[field](formData[field]) || '';
-    //     setErrors((prev) => ({ ...prev, [field]: errorMessage }));
-    // };
-
     const handleSubmit = () => {
         //to show errors if the user tries to submit without filling the form
         setTouched({ email: true, password: true, name: mode === 'signup' });
