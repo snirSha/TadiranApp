@@ -21,9 +21,8 @@ const getWarranties = async (userId) => {
     return warranties;
 };
 
-const getWarrantyById = async (warrantyId) => {
-    // Retrieve the warranty by ID and ensure it belongs to the user
-    const warranty = await Warranty.findOne({ _id: warrantyId })
+const getWarrantyById = async (warrantyId) => {//Gets warranty by warranty Id for admin panel
+    const warranty = await Warranty.findOne({ _id: warrantyId }).populate("userId", "name"); //for admin table
     if (!warranty) throw new Error("Warranty not found");
     return warranty;
 };
@@ -41,7 +40,7 @@ const updateWarranty = async (warrantyId, updateFields) => {
 
 //Only for admin-panel
 const getAllWarranties = async () => {
-    const warranties = await Warranty.find({});
+    const warranties = await Warranty.find({}).populate("userId", "name");//importent for the admin table to get the installer's name
     // console.log("warranties in getAllWarranties: ", warranties);
     return warranties;
 };

@@ -1,4 +1,4 @@
-import {getUsers, getUserById, updateUserById, deleteUser} from '../services/userService.js';
+import {getUsers, getUserById, updateUserById, deleteUsers} from '../services/userService.js';
 
 const getUsersController = async (req, res, next) => {
     try {
@@ -45,16 +45,25 @@ const updateUserDetailsController = async (req, res, next) => {
     }
 };
 
-const deleteUserController = async (req, res, next) => {
+const deleteUsersController = async (req, res, next) => {
     try {
-        const user = await deleteUser(req.params.id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+        console.log("Received delete request for users:", req.body);
+        const { ids } = req.body;
+        if (!ids || !ids.length) {
+            return res.status(400).json({ success: false, message: "No user IDs provided." });
         }
-        res.status(204).send();
+
+        const deletedIds = await deleteUsers(ids);
+
+        if (!deletedIds) {
+            return res.status(404).json({ success: false, message: "No users found to delete, possibly linked to warranties." });
+        }
+
+        res.status(200).json({ success: true, ids: deletedIds }); // ✅ החזרת `success: true` בפורמט תקין
     } catch (error) {
-        next(error); // Pass the error to the middleware
+        console.error("Error deleting users:", error);
+        res.status(500).json({ success: false, message: "Error deleting users" });
     }
 };
 
-export {getUsersController, getUserByIdController, updateUserDetailsController, deleteUserController};
+export {getUsersController, getUserByIdController, updateUserDetailsController, deleteUsersController};

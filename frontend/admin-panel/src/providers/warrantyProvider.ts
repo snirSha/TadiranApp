@@ -1,5 +1,5 @@
 import simpleRestProvider from "ra-data-simple-rest";
-import type { DataProvider, RaRecord, Identifier, DeleteManyParams, DeleteManyResult, GetOneParams} from "react-admin";
+import type { DataProvider, RaRecord, Identifier, DeleteManyParams, DeleteManyResult, GetOneParams, DeleteParams, DeleteResult} from "react-admin";
 // import path from "path";
 
 const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
@@ -16,7 +16,7 @@ const httpClient = (url: string, options: any = {}) => {
     return fetch(url, options)
         .then(async (response) => {
             const data = await response.json();
-            console.log("API Response:", data);
+            // console.log("API Response:", data);
             return data;
         });
 
@@ -26,17 +26,6 @@ const getHeaders = () => ({
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem("token")}`,
 });
-
-const normalizeStatus = (status: string) => {
-    const statusMapping: { [key: string]: string } = {
-        "Manual Review": "manual_review",
-        "Rejected": "rejected",
-        "Approved": "approved",
-        "Pending": "pending",
-    };
-
-    return statusMapping[status] || "pending"; // ✅ המרה לערך תקף
-};
 
 // const getDownloadUrl = async (resource: string, id: string, filename: string): Promise<string | null> => {
 //     const response = await fetch(`${apiUrl}/${resource}/${id}/download/${filename}`, {
@@ -60,7 +49,6 @@ export const warrantyProvider: DataProvider = {
     ...simpleRestProvider(apiUrl, httpClient),
 
     getList: async (resource: string) => {
-        // console.log("Params:", params); 
 
         const response = await fetch(`${apiUrl}/${resource}`, {
             method: "GET",
@@ -68,13 +56,14 @@ export const warrantyProvider: DataProvider = {
         });
 
         const { warranties } = await response.json();
-        // console.log("Processed Data:", warranties);
-        console.log("Raw warranty data from server:", warranties);
+        console.log("Raw warranties from server:", warranties);
         return {
-            data: warranties.map((item: { _id: string; status: string; invoiceUpload: string }) => ({
+            data: warranties.map((item: { _id: string; userId: { name: string }; installationDate: string; status: string; invoiceUpload: string }) => ({
                 ...item,
                 id: item._id,
-                status: normalizeStatus(item.status),
+                installerName: item.userId?.name || "Unknown Installer", // ✅ עכשיו TypeScript מזהה `userId`
+                installationDate: item.installationDate?.split("T")[0], // ✅ תאריך בפורמט תקין
+                status: item.status,
             })),
             total: warranties.length,
 
@@ -84,8 +73,6 @@ export const warrantyProvider: DataProvider = {
         resource: string,
         params: GetOneParams<RecordType>
     ): Promise<{ data: RecordType }> => {
-        console.log("Admin Token:", localStorage.getItem("token"));
-        console.log("Fetching warranty ID:", params.id); 
     
         const response = await fetch(`${apiUrl}/${resource}/${params.id}`, {
             method: "GET",
@@ -97,47 +84,63 @@ export const warrantyProvider: DataProvider = {
         }
     
         const responseJson = await response.json();
-        console.log("Fetched warranty data from server:", responseJson);
-
-        
 
         // const invoiceDownloadUrl = responseJson.data.invoiceUpload
         // ? await getDownloadUrl(resource, responseJson.data.id, "1747159803741-receipt")
         // : null;
 
-
+        console.log("Raw response from getOne:", responseJson.data);
         return {
             data: {
                 ...responseJson.data,
                 id: responseJson.data._id,
-                status: normalizeStatus(responseJson.data.status),
+                installerName: responseJson.userId?.name || "Unknown Installer",
+                installationDate: responseJson.data.installationDate.split("T")[0], //only date, no time
+                status: responseJson.data.status,
                 // invoiceDownloadUrl,
             } as RecordType,    
         };
     },
     update: async (resource: string, params: { id: string; data: any }) => {
-        console.log("Updating record ID:", params.id);
-        console.log("Data to update:", params.data);
-    
+
         const response = await fetch(`${apiUrl}/${resource}/${params.id}`, {
             method: "PUT",
             headers: getHeaders(),
             body: JSON.stringify(params.data),
         });
     
-        const responseText = await response.text();
-        console.log("Server Response:", responseText);
-    
         if (!response.ok) {
             throw new Error(`Failed to update warranty: ${response.status} ${response.statusText}`);
         }
     
-        const updatedWarranty = JSON.parse(responseText);
-        if (!updatedWarranty) {
-            throw new Error("Server response is empty or invalid.");
+        const updatedWarranty = await response.json();
+
+
+        if (!updatedWarranty || !updatedWarranty.warranty || !updatedWarranty.warranty._id) {
+            throw new Error("Server response is missing 'id' key.");
+        }
+        
+        return { data: { id: updatedWarranty.warranty._id, ...updatedWarranty.warranty } };
+    },
+    delete: async <RecordType extends RaRecord = any>(
+        resource: string,
+        params: DeleteParams<RecordType>
+    ): Promise<DeleteResult<RecordType>> => {
+        console.log("Deleting record ID:", params.id);
+    
+        const response = await fetch(`${apiUrl}/${resource}`, {
+            method: "DELETE",
+            headers: getHeaders(),
+            body: JSON.stringify({ ids: [params.id] }), //will use deleteWarrantyController for one to many records
+        });
+    
+        if (!response.ok) {
+            throw new Error(`Failed to delete warranty: ${response.status} ${response.statusText}`);
         }
     
-        return { data: updatedWarranty };
+        const responseJson = await response.json();
+    
+        return { data: responseJson.ids }; // 🔹 מחזיר את ה-`id` שנמחק
     },
     deleteMany: async <RecordType extends RaRecord<Identifier>>(
         resource: string,
@@ -154,7 +157,6 @@ export const warrantyProvider: DataProvider = {
         }
     
         const responseJson = await response.json();
-        console.log("Server Response:", responseJson);
     
         return { data: responseJson.ids }; 
     },

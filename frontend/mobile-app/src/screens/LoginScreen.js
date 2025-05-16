@@ -3,8 +3,10 @@ import { View, TouchableOpacity, Text } from 'react-native';
 import AuthForm from '../components/AuthForm';
 import authService from '../services/authService';
 import theme from "../theme";
+import { useNavigation } from "@react-navigation/native";
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
+    const navigation = useNavigation();
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 

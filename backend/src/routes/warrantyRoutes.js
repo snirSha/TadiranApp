@@ -13,7 +13,7 @@ router.get('/:id', authMiddleware, validateObjectId('id') , getWarrantyByIdContr
 router.put("/:id", authMiddleware, isAdminMiddleware,validateObjectId('id'), updateWarrantyController); //Only for Admin
 router.delete('/', authMiddleware, isAdminMiddleware, deleteWarrantiesController);//Only for Admin
 
-//Specific route for handling downlaod file for Admin only
+//Specific route for handling downlaod file for Admin only ********NOT USED************
 router.get("/:id/download/:filename", authMiddleware, isAdminMiddleware,validateObjectId('id'), downloadInvoiceController);
 
 

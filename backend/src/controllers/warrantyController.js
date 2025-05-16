@@ -7,7 +7,7 @@ const addWarrantyController = async (req, res, next) => {
     const userId = req.user.id; // Get userId from the authenticated user
     const { clientName, productInfo, installationDate } = req.body; // Extract fields from request body
     const invoiceFilePath = req.file ? req.file.path : null;// Extract the file path of the uploaded invoice
-    console.log("invoiceFilePath: ",invoiceFilePath);
+    // console.log("invoiceFilePath: ",invoiceFilePath);
     if (!invoiceFilePath) {
         return res.status(400).json({ message: "קובץ חשבונית לא הועלה כראוי" });
     }
@@ -73,7 +73,7 @@ const getWarrantyByIdController = async (req, res, next) =>{
         if (!warranty) {
             return res.status(404).json({ message: "Warranty not found." });
         }
-        res.status(200).json({ data: { ...warranty.toObject(), id: warranty._id } }); //adds the id to the object
+        res.status(200).json({ data: { ...warranty.toObject(), id: warranty._id , installerName: warranty.userId.name} }); //adds the id and installer's name to the object
     } catch (error) {
         next(error); // Pass the error to the middleware
     }
@@ -94,7 +94,7 @@ const updateWarrantyController = async (req, res, next) => {
 
         res.status(200).json({
             message: "Warranty updated successfully",
-            warranty: updatedWarranty,
+            warranty: warranty,
         });
     } catch (error) {
         next(error);
@@ -104,22 +104,22 @@ const updateWarrantyController = async (req, res, next) => {
 
 const deleteWarrantiesController = async (req, res, next) => {
     try {
-        const { ids } = req.body; // ✅ קבלת מערך של `ids`
+        const { ids } = req.body; 
         if (!ids || !ids.length) {
             return res.status(400).json({ message: "No warranty IDs provided." });
         }
 
-        const deletedRecords = await Warranty.deleteMany({ _id: { $in: ids } }); // ✅ מחיקה מרובה
+        const deletedIds = await deleteWarranties(ids); 
 
-        if (deletedRecords.deletedCount === 0) {
+        if (!deletedIds) {
             return res.status(404).json({ message: "No warranties found to delete." });
         }
 
-        res.status(200).json({ ids }); // ✅ החזרת המזהים שנמחקו
+        res.status(200).json({ ids: deletedIds });
     } catch (error) {
         next(error);
     }
-}
+};
 
 //Specific controller for handling downlaod file for Admin only
 const downloadInvoiceController = async (req, res) => {

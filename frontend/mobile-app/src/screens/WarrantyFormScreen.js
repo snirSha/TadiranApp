@@ -127,21 +127,26 @@ const WarrantyFormScreen = () => {
                 />
                 {errors.productInfo && <Text style={styles.errorText}>{errors.productInfo}</Text>}
 
-                {Platform.OS === 'web' ? (
+                {Platform.OS === "web" ? (
                     <input
                         type="date"
                         value={installationDate}
                         onChange={(e) => {
                             setInstallationDate(e.target.value);
-                            setFormData((prev) => ({ ...prev, installationDate: e.target.value })); // ✅ עדכון `formData`
+                            setFormData((prev) => ({ ...prev, installationDate: e.target.value }));
                             setErrors((prevErrors) => ({ ...prevErrors, installationDate: null }));
                         }}
+                        style={styles.dateInputWeb} // ✅ שימוש בסטייל לשדה התאריך ב-Web
                     />
                 ) : (
                     <>
-                        <TouchableOpacity onPress={showDatePicker} style={styles.iconButton}>
-                            <MaterialIcons name="calendar-today" size={24} color="black" />
+                        <TouchableOpacity onPress={showDatePicker} style={styles.datePickerContainer}>
+                            <MaterialIcons name="calendar-today" size={28} color="black" />
+                            <Text style={styles.dateText}>
+                                {installationDate ? installationDate : "בחר תאריך"}
+                            </Text>
                         </TouchableOpacity>
+
 
                         <DateTimePickerModal
                             isVisible={isDatePickerVisible}
@@ -186,6 +191,42 @@ const styles = StyleSheet.create({
         alignSelf: "center", // מרכז את הכפתור
         marginTop: 20, // ריווח בין הכפתור להעלאה לבין הכפתור הזה
     },
+    // ✅ עיצוב לשדה התאריך ב-Web
+    dateInputWeb: {
+        width: "50%", // ✅ רוחב מוקטן ב-Web
+        padding: 10,
+        fontSize: 16,
+        borderWidth: 1,
+        borderColor: "#aaa",
+        borderRadius: 8,
+        backgroundColor: "#f0f0f0",
+        textAlign: "right",
+        appearance: "none",
+        display: "block", 
+        marginLeft: "auto",
+        marginRight: "auto"
+    },
+    // ✅ עיצוב לכפתור בחירת תאריך ב-Mobile
+    datePickerContainer: {
+        width: "50%", // ✅ רק הרוחב מצטמצם ל-50%
+        paddingVertical: 12, 
+        paddingHorizontal: 15, 
+        borderWidth: 1, 
+        borderColor: "#aaa", 
+        borderRadius: 8, 
+        backgroundColor: "#f0f0f0", 
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+
+    dateText: {
+        fontSize: 18,
+        color: "#333",
+        fontWeight: "bold",
+        marginLeft: 10, // מרווח מהאייקון
+    },
+
 });
 
 export default WarrantyFormScreen;

@@ -12,12 +12,12 @@ const theme = {
   styles: StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: "flex-start", // ✅ מתחיל מהחלק העליון
+      justifyContent: "flex-start",
       padding: 20,
-      writingDirection: "rtl", // 🔹 תמיכה בעברית
+      writingDirection: "rtl",
       marginTop: 40,
       alignSelf: "center",
-      width: "85%"
+      width: "85%",
     },
     errorText: {
       color: "red",
@@ -40,8 +40,36 @@ const theme = {
       alignSelf: "center",
       marginTop: 20,
     },
+    // ✅ הוספת סטיילים ל-dropdown
+    dropdownContainer: {
+      position: "absolute",
+      right: 10,
+      top: 50,
+      backgroundColor: "#fff",
+      padding: 15,
+      borderRadius: 8,
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.2,
+      shadowRadius: 5,
+      elevation: 5, // 🔹 עבור אנדרואיד
+    },
+    userIcon: {
+      fontSize: 32, // ✅ הגדלה של האייקון
+      color: "black",
+    },
+    logoutButton: {
+      paddingVertical: 10,
+      paddingHorizontal: 15,
+      borderBottomWidth: 1,
+      borderBottomColor: "#ddd",
+    },
+    logoutText: {
+      fontSize: 18,
+      color: "#333",
+      fontWeight: "bold",
+    },
   }),
-
 };
 
 export default theme;

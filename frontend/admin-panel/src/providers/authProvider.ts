@@ -25,7 +25,11 @@ export const authProvider = {
     },
     checkAuth: () => {
         const token = localStorage.getItem("token");
-        return token ? Promise.resolve() : Promise.reject("No token, redirecting to login");    
+        if (!token) {
+            window.location.href = "/login";
+            return Promise.reject("No token, redirecting to login");
+        }
+        return Promise.resolve();
     },
     checkError: (error: { status?: number }) => {//like authGuard in frontend
         if (error.status === 401 || error.status === 403) {

@@ -26,9 +26,10 @@ const signupController = async (req, res, next) => {
             });
         }
 
-        const newUser = await signup(req.body, req.file);
+        const newUser = await signup({ name, email, password });
         // Respond with token and user data
         res.status(201).json({
+            success: true,
             message: "User created successfully",
             user: {
                 id: newUser._id,
@@ -57,7 +58,7 @@ const loginController = async (req, res, next) => {
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
             },
         });
     } catch (error) {

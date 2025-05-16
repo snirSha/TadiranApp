@@ -7,6 +7,7 @@ export const WarrantiesList = () => (
             <TextField source="productInfo" />
             <TextField source="installationDate" />
             <TextField source="status" />
+            <TextField source="installerName" label="Installer Name" />
         </Datagrid>
     </List>
 );

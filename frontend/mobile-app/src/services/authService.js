@@ -18,14 +18,19 @@ const login = async (email, password) => {
 const signup = async (name, email, password) => {
     try {
         const response = await api.post('/auth/signup', { name, email, password });
-        if (!response.data.success) {
-            throw new Error('שגיאה בהרשמה');
+
+        console.log("Signup Response:", response.data); 
+
+        if (response.data.success === false) { 
+            throw new Error(response.data.message || 'שגיאה בהרשמה');
         }
-        return response.data.message;
+
+        return response.data;
     } catch (error) {
+        console.log("Signup Error:", error);
         const errorMessage = error.response?.data?.message || 'שגיאה בהרשמה';
         throw new Error(errorMessage);
     }
-}
+};
 
 export default { login, signup };
