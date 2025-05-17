@@ -15,12 +15,11 @@ const SignUpScreen = () => {
             setLoading(true);
     
             const response = await authService.signup(formData.name, formData.email, formData.password);
-            console.log("Signup Response:", response); // ✅ הדפסת התגובה מהשרת
+            // console.log("Signup Response:", response); // ✅ הדפסת התגובה מהשרת
     
             // ✅ זיהוי ההצלחה לפי `message`, כי אין `success` בתגובה
             if (response.success) {  
-                console.log("Signup Success! Redirecting to Login...");
-                navigation.navigation("Login"); // ✅ מעבר למסך Login
+                navigation.navigate("Login"); // ✅ מעבר למסך Login
             } else {
                 console.log("Signup Failed:", response);
                 setErrorMessage("הרשמה נכשלה, נסה שוב.");

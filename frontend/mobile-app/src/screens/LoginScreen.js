@@ -3,18 +3,32 @@ import { View, TouchableOpacity, Text } from 'react-native';
 import AuthForm from '../components/AuthForm';
 import authService from '../services/authService';
 import theme from "../theme";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
     const navigation = useNavigation();
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const { setUserToken } = useContext(AuthContext);
 
     const handleLogin = async (formData) => {
         try {
             setLoading(true);
-            await authService.login(formData.email, formData.password);
-            navigation.navigate('WarrantyForm');
+            const token = await authService.login(formData.email, formData.password);
+            console.log("Login Token:", token);
+
+            if (token) {
+                await AsyncStorage.setItem("userToken", token); 
+                setUserToken(token); 
+                console.log("✅ Navigating to WarrantyForm...");
+                navigation.navigate("WarrantyForm");
+            } else {
+                setErrorMessage("שגיאה בהתחברות, נסה שוב.");
+            }
+    
         } catch (error) {
             setErrorMessage(error.message);
         } finally {

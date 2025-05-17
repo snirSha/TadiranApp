@@ -19,8 +19,9 @@ if(!fs.existsSync(uploadPath)){
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         // console.log("Received file:", file);
+        console.log("am I her in nulter?",file);
         if (!file) {
-            console.error("❌ No file received!");
+            console.error("No file received!");
             return cb(new Error("No file received"), null);
         }
         cb(null, uploadPath);
@@ -31,7 +32,21 @@ const storage = multer.diskStorage({
         cb(null, `${Date.now()}-${file.originalname}`)
     },
 });
-console.log("Middleware activated: Multer is running"); 
-const upload = multer({storage: storage}).single('invoice');
+
+const fileFilter = (req, file, cb) => {
+    console.log("Received file MIME type:", file.mimetype);
+    const allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
+    if (allowedMimeTypes.includes(file.mimetype)) {
+        cb(null, true); // קובץ נתמך
+    } else {
+        console.error("Unsupported file type:", file.mimetype);
+        cb(new Error("Unsupported file type"), false); // קובץ לא נתמך
+    }
+};
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter
+}).single('invoice');
 
 export {upload};

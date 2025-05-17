@@ -3,14 +3,15 @@ import { View, Text, TouchableOpacity, Modal } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import theme from "../theme"; // ✅ שימוש ב-theme.styles
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UserMenu = ({ routeName }) => {
     const navigation = useNavigation();
     const route = useRoute();
     const [isDropdownVisible, setDropdownVisible] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.removeItem("token");
+    const handleLogout = async () => {
+        await AsyncStorage.removeItem("userToken");
         navigation.navigate("Login"); 
     };
 

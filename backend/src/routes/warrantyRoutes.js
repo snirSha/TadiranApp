@@ -1,5 +1,5 @@
 import express from 'express';
-import { addWarrantyController , getWarrantiesController, getWarrantyByIdController, updateWarrantyController, deleteWarrantiesController, downloadInvoiceController} from '../controllers/warrantyController.js';
+import { addWarrantyController , getWarrantiesController, getWarrantyByIdController, updateWarrantyController, deleteWarrantiesController, downloadWarrantyFileController } from '../controllers/warrantyController.js';
 import { upload } from '../utils/uploadhelper.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import validateObjectId from '../middleware/validateObjectId.js';
@@ -13,8 +13,8 @@ router.get('/:id', authMiddleware, validateObjectId('id') , getWarrantyByIdContr
 router.put("/:id", authMiddleware, isAdminMiddleware,validateObjectId('id'), updateWarrantyController); //Only for Admin
 router.delete('/', authMiddleware, isAdminMiddleware, deleteWarrantiesController);//Only for Admin
 
-//Specific route for handling downlaod file for Admin only ********NOT USED************
-router.get("/:id/download/:filename", authMiddleware, isAdminMiddleware,validateObjectId('id'), downloadInvoiceController);
+//Specific route for handling downlaod file for Admin only 
+router.get("/:id/download" , authMiddleware, isAdminMiddleware, validateObjectId('id') , downloadWarrantyFileController);
 
 
 export default router;

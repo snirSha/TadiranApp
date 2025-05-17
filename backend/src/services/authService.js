@@ -7,7 +7,7 @@ dotenv.config();
 const authorizedAdmins = process.env.ADMIN_EMAILS.split(",");
 
 const signup = async (userData) => {
-    console.log("User Data:", userData);
+    // console.log("User Data:", userData);
     const { name, email, password } = userData;
     if(!name || !email || !password) throw new Error('Please provide all fields');
 
@@ -25,7 +25,7 @@ const login = async (email, password) => {
 
     const isAdmin = authorizedAdmins.includes(email);//check if the user mail is one from the admin users
 
-    const token = jwt.sign({userId: user._id,  isAdmin: isAdmin}, process.env.JWT_SECRET, {expiresIn: '1h'});
+    const token = jwt.sign({userId: user._id,  isAdmin: isAdmin}, process.env.JWT_SECRET, {expiresIn: '2h'});
     // console.log("Generated Token:", jwt.decode(token));
 
     return {user, token};

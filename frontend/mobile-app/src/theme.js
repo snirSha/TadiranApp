@@ -15,9 +15,9 @@ const theme = {
       justifyContent: "flex-start",
       padding: 20,
       writingDirection: "rtl",
-      marginTop: 40,
+      marginTop: 80,
       alignSelf: "center",
-      width: "85%",
+      width: "100%",
     },
     errorText: {
       color: "red",
@@ -28,10 +28,16 @@ const theme = {
     tableHeader: {
       backgroundColor: "#FFD700",
       fontWeight: "bold",
+      writingDirection: "rtl",
+    },
+    tableCell: {
+      textAlign: "right", // יישור לימין
+      writingDirection: "rtl", // כיוון ימין-לשמאל לתאים
     },
     tableRow: {
       borderBottomWidth: 1,
       borderBottomColor: "#ddd",
+      writingDirection: "rtl",
     },
     button: {
       backgroundColor: "#FFD700",

@@ -31,13 +31,10 @@ const WarrantyFormScreen = () => {
 
     const [installationDate, setInstallationDate] = useState('');
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-    const showDatePicker = () => setDatePickerVisibility(true);
-    const hideDatePicker = () => setDatePickerVisibility(false);
-
-
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
+    const showDatePicker = () => setDatePickerVisibility(true);
+    const hideDatePicker = () => setDatePickerVisibility(false);
 
     // שינוי ערכים בטופס
     const handleChange = (field, value) => {
@@ -67,12 +64,10 @@ const WarrantyFormScreen = () => {
             invoiceUpload: validationRules.file,
         };
     
-        let newErrors = validateFields(formData, validationRulesForForm) || {}; // ✅ וודא שהערך הוא תמיד אובייקט
-        console.log("שגיאות חדשות:", newErrors);
-    
+        let newErrors = validateFields(formData, validationRulesForForm) || {}; //  וודא שהערך הוא תמיד אובייקט
         setErrors(newErrors);
     
-        if (Object.keys(newErrors).length > 0) return; // ✅ עכשיו לא יקרוס אם אין שגיאות
+        if (Object.keys(newErrors).length > 0) return; 
     
         try {
             setLoading(true);
@@ -86,18 +81,19 @@ const WarrantyFormScreen = () => {
             //In mobile applications, the uri can be sent directly since it correctly points to the file's location on the device
             if (formData.invoiceUpload) {
                 if (Platform.OS === "web") {
-                    const blob = await fetch(formData.invoiceUpload.uri).then(res => res.blob());
-                    warrantyData.append("invoice", blob, formData.invoiceUpload.name); // send a real file
+                    const blob = await fetch(formData.invoiceUpload.uri).then((res) => res.blob());
+                    warrantyData.append("invoice", blob, formData.invoiceUpload.name);
                 } else {
                     warrantyData.append("invoice", {
                         uri: formData.invoiceUpload.uri,
-                        type: formData.invoiceUpload.type,
-                        name: formData.invoiceUpload.name,
+                        type: formData.invoiceUpload.mimeType || "image/jpeg",
+                        name: formData.invoiceUpload.name || "upload.jpg",
                     });
                 }
             }
             
-    
+            // console.log("🔍 File data before adding to warrantyData:", formData.invoiceUpload);
+            // console.log("📨 Final warrantyData:", warrantyData);
             await warrantyService.createWarranty(warrantyData);
             navigation.navigate("WarrantyList");
         } catch (error) {
@@ -108,7 +104,6 @@ const WarrantyFormScreen = () => {
     };
 
     return (
-        // <SwipeGestureLayout screen="WarrantyForm">
         <>
             <View style={styles.container}>
                 <TextInput
@@ -136,7 +131,7 @@ const WarrantyFormScreen = () => {
                             setFormData((prev) => ({ ...prev, installationDate: e.target.value }));
                             setErrors((prevErrors) => ({ ...prevErrors, installationDate: null }));
                         }}
-                        style={styles.dateInputWeb} // ✅ שימוש בסטייל לשדה התאריך ב-Web
+                        style={styles.dateInputWeb} //  שימוש בסטייל לשדה התאריך
                     />
                 ) : (
                     <>
@@ -173,7 +168,6 @@ const WarrantyFormScreen = () => {
             </View>
             <FloatingButton title="לרשימת האחריות" onPress={() => navigation.navigate("WarrantyList")} />
         </>
-        // </SwipeGestureLayout>
     );
 };
 
@@ -208,7 +202,7 @@ const styles = StyleSheet.create({
     },
     // ✅ עיצוב לכפתור בחירת תאריך ב-Mobile
     datePickerContainer: {
-        width: "50%", // ✅ רק הרוחב מצטמצם ל-50%
+        width: "80%", // ✅ רק הרוחב מצטמצם ל-50%
         paddingVertical: 12, 
         paddingHorizontal: 15, 
         borderWidth: 1, 
@@ -218,6 +212,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
+        alignSelf: "center",
     },
 
     dateText: {

@@ -1,9 +1,10 @@
-import {addWarranty, getWarranties, getWarrantyById, deleteWarranties, getAllWarranties} from "../services/warrantyService.js";
+import {addWarranty, getWarranties, getWarrantyById, deleteWarranties, getAllWarranties, getWarrantyFilePath} from "../services/warrantyService.js";
 import { processOCR } from '../utils/ocrHelper.js';
 import Warranty from "../models/warrantyModel.js";
-import { downloadInvoice } from "../utils/downloadHelper.js";
+import path from "path"; 
 
 const addWarrantyController = async (req, res, next) => {
+    console.log("am I her in controller?");
     const userId = req.user.id; // Get userId from the authenticated user
     const { clientName, productInfo, installationDate } = req.body; // Extract fields from request body
     const invoiceFilePath = req.file ? req.file.path : null;// Extract the file path of the uploaded invoice
@@ -122,26 +123,25 @@ const deleteWarrantiesController = async (req, res, next) => {
 };
 
 //Specific controller for handling downlaod file for Admin only
-const downloadInvoiceController = async (req, res) => {
+const downloadWarrantyFileController = async (req, res, next) => {
     try {
-        const { id, filename } = req.params; // הוסף את filename
-        const warranty = await Warranty.findById(id);
+        const warrantyId = req.params.id;
+        const filePath = await getWarrantyFilePath(warrantyId);
 
-        if (!warranty || !warranty.invoiceUpload) {
-            return res.status(404).json({ message: "Invoice not found" });
+        if (!filePath) {
+            return res.status(404).json({ message: "File not found" });
         }
 
-        // בדוק אם שם הקובץ תואם את מה שמאוחסן ב-Warranty
-        if (warranty.invoiceUpload !== filename) {
-            return res.status(400).json({ message: "Filename mismatch" });
-        }
+        console.log("🔍 Sending file:", filePath);
 
-        // השתמש בפונקציה downloadInvoice
-        downloadInvoice(req, res);
+        
+        res.setHeader("Content-Disposition", "attachment");
+        res.download(filePath);
     } catch (error) {
-        console.error("Error downloading invoice:", error);
-        res.status(500).json({ message: "Server error", error });
+        console.error("Error downloading file:", error);
+        next(error);
     }
 };
 
-export { addWarrantyController , getWarrantiesController, getWarrantyByIdController, updateWarrantyController , deleteWarrantiesController, downloadInvoiceController};
+
+export { addWarrantyController , getWarrantiesController, getWarrantyByIdController, updateWarrantyController , deleteWarrantiesController, downloadWarrantyFileController};

@@ -2,7 +2,12 @@ import api from './api';
 
 const createWarranty = async (warrantyData) => {
     try {
-        const response = await api.post('/warranties', warrantyData);
+        console.log("warrantyData: ",warrantyData);
+        const response = await api.post('/warranties', warrantyData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', 
+            },
+        });
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.message || 'שגיאה ביצירת אחריות');

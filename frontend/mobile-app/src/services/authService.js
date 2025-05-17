@@ -8,6 +8,7 @@ const login = async (email, password) => {
             throw new Error('שרת לא החזיר טוקן תקין');
         }
         await AsyncStorage.setItem('userToken', response.data.token);
+        // console.log("response: ",response);
         return response.data.token;
     } catch (error) {
         const errorMessage = error.response?.data?.message || 'אימייל או סיסמה שגויים';
@@ -17,6 +18,7 @@ const login = async (email, password) => {
 
 const signup = async (name, email, password) => {
     try {
+        // console.log("📝 Signup Data:", { name, email, password })
         const response = await api.post('/auth/signup', { name, email, password });
 
         console.log("Signup Response:", response.data); 

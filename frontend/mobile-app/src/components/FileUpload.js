@@ -1,11 +1,12 @@
 import React from "react";
 import { StyleSheet, View, Text, Alert, Image } from "react-native";
-import { TextInput, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import * as DocumentPicker from "expo-document-picker";
-import { launchCamera } from "react-native-image-picker";
+import * as ImagePicker from "expo-image-picker";
 import { Platform } from "react-native";
 
 const FileUpload = ({ formData, setFormData, setErrors }) => {
+
     const handleSelectFile = () => {
         if (Platform.OS === "web") {
             handleFileUpload(); // for web onlu file upload option
@@ -22,17 +23,36 @@ const FileUpload = ({ formData, setFormData, setErrors }) => {
         }
     };
 
+    const requestCameraPermissions = async () => {
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
+        console.log("🔍 Camera permission status:", status);
+
+        if (status !== "granted") {
+            alert("יש לאפשר גישה למצלמה כדי להעלות תמונות.");
+            return false;
+        }
+        return true;
+    };
+    
+
     const handleTakePhoto = async () => {
-        try{
-            const options = { mediaType: "photo", quality: 1 };
-            const result = await launchCamera(options);
-            if (!result.didCancel) {
-                setFormData((prev) => ({ ...prev, invoiceUpload: result.assets[0] }));
-            }
-        }catch(error){
-            setErrors((prevErrors) => ({ ...prevErrors, invoiceUpload: error.message }));
+        const hasPermission = await requestCameraPermissions();
+        if (!hasPermission) return;
+    
+        console.log("📷 Opening camera...");
+        const result = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+    
+        console.log("📸 Camera result:", result);
+        if (!result.canceled) {
+            setFormData((prev) => ({ ...prev, invoiceUpload: result.assets[0] }));
         }
     };
+
+    
 
     const handleFileUpload = async () => {
         try {
@@ -57,6 +77,18 @@ const FileUpload = ({ formData, setFormData, setErrors }) => {
                 name: selectedFile.name, // ✅ שם הקובץ 
                 type: selectedFile.mimeType || "application/octet-stream", // ✅ סוג הקובץ 
             };
+            // ✅ המרת `base64` לקובץ בפלאפון
+            if (Platform.OS !== "web" && fileData.uri.startsWith("data:image")) {
+                const base64Data = fileData.uri.split(",")[1]; // מחיקת החלק 'data:image/jpeg;base64,'
+                const filePath = `${FileSystem.cacheDirectory}${fileData.name}`;
+
+                await FileSystem.writeAsStringAsync(filePath, base64Data, {
+                    encoding: FileSystem.EncodingType.Base64,
+                });
+
+                fileData.uri = filePath; // עדכון הנתיב החדש
+            }
+
             setFormData((prev) => ({ ...prev, invoiceUpload: fileData }));
     
             setErrors((prevErrors) => ({ ...prevErrors, invoiceUpload: null })); // ניקוי שגיאה אחרי בחירת קובץ

@@ -1,6 +1,5 @@
 import simpleRestProvider from "ra-data-simple-rest";
 import type { DataProvider, RaRecord, Identifier, DeleteManyParams, DeleteManyResult, GetOneParams, DeleteParams, DeleteResult} from "react-admin";
-// import path from "path";
 
 const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
@@ -22,27 +21,15 @@ const httpClient = (url: string, options: any = {}) => {
 
 };
 
-const getHeaders = () => ({
+export const getHeaders = () => ({
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem("token")}`,
 });
 
-// const getDownloadUrl = async (resource: string, id: string, filename: string): Promise<string | null> => {
-//     const response = await fetch(`${apiUrl}/${resource}/${id}/download/${filename}`, {
-//         method: "GET",
-//         headers: getHeaders(),
-//     });
-
-//     if (!response.ok) {
-//         console.error(`Failed to fetch download URL: ${response.status} ${response.statusText}`);
-//         return null;
-//     }
-
-//     const responseJson = await response.json();
-//     console.log("Fetched download URL:", responseJson);
-
-//     return responseJson.url || null; // Assuming the server returns the download URL in `url`
-// };
+export const getDownloadUrl = async (warrantyId: string): Promise<string> => {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+    return `${apiUrl}/warranties/${warrantyId}/download`; 
+};
 
 
 export const warrantyProvider: DataProvider = {
@@ -56,13 +43,13 @@ export const warrantyProvider: DataProvider = {
         });
 
         const { warranties } = await response.json();
-        console.log("Raw warranties from server:", warranties);
+        // console.log("Raw warranties from server:", warranties);
         return {
             data: warranties.map((item: { _id: string; userId: { name: string }; installationDate: string; status: string; invoiceUpload: string }) => ({
                 ...item,
                 id: item._id,
-                installerName: item.userId?.name || "Unknown Installer", // ✅ עכשיו TypeScript מזהה `userId`
-                installationDate: item.installationDate?.split("T")[0], // ✅ תאריך בפורמט תקין
+                installerName: item.userId?.name || "Unknown Installer", 
+                installationDate: item.installationDate?.split("T")[0],
                 status: item.status,
             })),
             total: warranties.length,
@@ -84,20 +71,16 @@ export const warrantyProvider: DataProvider = {
         }
     
         const responseJson = await response.json();
-
-        // const invoiceDownloadUrl = responseJson.data.invoiceUpload
-        // ? await getDownloadUrl(resource, responseJson.data.id, "1747159803741-receipt")
-        // : null;
-
-        console.log("Raw response from getOne:", responseJson.data);
+        // console.log("🔍 Warranty Data:", responseJson.data);
+        // console.log("🔍 Installer Name:", responseJson.data.userId?.name);
         return {
             data: {
                 ...responseJson.data,
                 id: responseJson.data._id,
-                installerName: responseJson.userId?.name || "Unknown Installer",
+                installerName: responseJson.data.userId.name || "Unknown Installer",
                 installationDate: responseJson.data.installationDate.split("T")[0], //only date, no time
                 status: responseJson.data.status,
-                // invoiceDownloadUrl,
+                fileName: responseJson.data.invoiceUpload ? responseJson.data.invoiceUpload.split("\\").pop() : null,
             } as RecordType,    
         };
     },

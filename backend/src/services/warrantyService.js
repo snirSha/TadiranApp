@@ -1,4 +1,6 @@
 import Warranty from "../models/warrantyModel.js";
+import path from "path";
+import * as fs from "fs";
 
 const addWarranty = async (userId, warrantyData) => {
     // Create and save the warranty
@@ -15,8 +17,7 @@ const addWarranty = async (userId, warrantyData) => {
     return warranty;
 }
 
-const getWarranties = async (userId) => {
-    // Retrieve all warranties for the user
+const getWarranties = async (userId) => {// Retrieve all warranties for the user
     const warranties = await Warranty.find({ userId });
     return warranties;
 };
@@ -45,5 +46,25 @@ const getAllWarranties = async () => {
     return warranties;
 };
 
+//Only for admin-panel -check and send back the file path for download
+const getWarrantyFilePath = async (warrantyId) => {
+    const warranty = await Warranty.findById(warrantyId);
 
-export { addWarranty, getWarranties, getWarrantyById, deleteWarranties, updateWarranty, getAllWarranties};
+    if (!warranty || !warranty.invoiceUpload) {
+        console.error(`No file found for warranty ID: ${warrantyId}`);
+        return null;
+    }
+
+    const filePath = path.resolve(warranty.invoiceUpload);
+    console.log("🔍 File Path Resolved:", filePath);
+
+    if (!fs.existsSync(filePath)) {
+        console.error(`File does not exist on server: ${filePath}`);
+        return null;
+    }
+
+    return filePath;
+};
+
+
+export { addWarranty, getWarranties, getWarrantyById, deleteWarranties, updateWarranty, getAllWarranties, getWarrantyFilePath};

@@ -38,7 +38,7 @@ const WarrantyListScreen = () => {
         fetchWarranties();
 
         //Phase 2: show updated warranties
-        const socket = new WebSocket("ws://localhost:8080");
+        const socket = new WebSocket("ws://192.168.1.157:8080");//localhost will not work for mobile
 
         socket.onmessage = (event) => {
             const updatedWarranty = JSON.parse(event.data);
@@ -73,10 +73,9 @@ const WarrantyListScreen = () => {
     };
 
     if (loading) return <ActivityIndicator animating size="large" />;
-    if (error) return <Text style={styles.errorText}>{errorMessage}</Text>;
+    // if (error) return <Text style={styles.errorText}>{errorMessage}</Text>;
 
     return (
-        // <SwipeGestureLayout screen="WarrantyForm">
         <>
             <View style={styles.container}>
                 {warranties.length === 0 ? (
@@ -111,7 +110,6 @@ const WarrantyListScreen = () => {
             </View>
             <FloatingButton title="להוספת אחריות" onPress={() => navigation.navigate("WarrantyForm")} />
         </>
-        // </SwipeGestureLayout>        
     );
 };
 

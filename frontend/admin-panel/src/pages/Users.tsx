@@ -1,4 +1,4 @@
-import { List, Datagrid, TextField, EditButton, Edit, SimpleForm, TextInput } from "react-admin";
+import { List, Datagrid, TextField /*, EditButton , Edit, SimpleForm, TextInput*/ } from "react-admin";
 
 export const UsersList = () => (
     <List>
@@ -6,16 +6,16 @@ export const UsersList = () => (
             <TextField source="id" />
             <TextField source="name" />
             <TextField source="email" />
-            <EditButton />
+            {/* <EditButton /> */}
         </Datagrid>
     </List>
 );
 
-export const UsersEdit = () => (
-    <Edit>
-        <SimpleForm>
-            <TextInput source="name" />
-            <TextInput source="email" />
-        </SimpleForm>
-    </Edit>
-);
+// export const UsersEdit = () => (
+//     <Edit>
+//         <SimpleForm>
+//             <TextInput source="name" />
+//             <TextInput source="email" />
+//         </SimpleForm>
+//     </Edit>
+// );
