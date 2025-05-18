@@ -3,7 +3,7 @@ import sharp from 'sharp'; // For image preprocessing
 import path from 'path';
 import fs from 'fs';
 import { updateWarranty, getWarrantyById } from '../services/warrantyService.js';
-import { broadcastUpdate } from "../wsServer.js";
+// import { broadcastUpdate } from "../wsServer.js";
 
 const config = { 
     lang: "eng", // Add "heb" if needed: "eng+heb"
@@ -80,7 +80,7 @@ const processOCR = async (warrantyId, invoiceFilePath) => {
 
         const updatedWarranty = await updateWarranty(warrantyId, { extractedDate, status }); // עדכון מסד הנתונים
         
-        broadcastUpdate(updatedWarranty);// Broadcast the update to the client using websokets
+        // broadcastUpdate(updatedWarranty);// Broadcast the update to the client using websokets
 
         console.log(`Warranty ID ${warrantyId} updated with status: ${status}`);
     } catch (error) {

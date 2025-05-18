@@ -1,11 +1,12 @@
 import express from 'express';
-import connectDB from './config/db.js';
+import connectDB from './config/mongoDB.js';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js'
 import userRoutes from './routes/userRoutes.js';
 import warrantyRoutes from './routes/warrantyRoutes.js';
 import errorHandler from './middleware/errorMiddleware.js';
 import cors from 'cors';
+import db from "./config/firebaseConfig.js";
 
 dotenv.config();
 const app = express();
@@ -14,6 +15,11 @@ app.use(cors());//gives access to the API from the mobile app
 
 // Connect to MongoDB
 connectDB();
+
+//test the firebase connection
+db.collection("test").add({ message: "Firebase connection works" })
+    .then(() => console.log("Firebase is connected"))
+    .catch((error) => console.error("Firebase failure:", error));
 
 // Use authRoutes for authentication-related routes
 app.use('/api/auth', authRoutes);

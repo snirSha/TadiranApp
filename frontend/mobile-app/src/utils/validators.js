@@ -12,15 +12,15 @@ export const validationRules = {
     date: (value) => value ? '' : 'תאריך הוא שדה חובה.',
     file: (value) => {
         if (!value) return 'חובה להעלות קובץ.';
-        console.log("🔍 File value:", value);
-        console.log("🔍 File type:", value.type);
-        console.log("🔍 File mimeType:", value.mimeType);
+        // console.log("🔍 File value:", value);
+        // console.log("🔍 File type:", value.type);
+        // console.log("🔍 File mimeType:", value.mimeType);
     
         const validFileTypes = ['application/pdf']; // סוגי קבצים נוספים שאינם תמונות
         const isImage = (value.type && value.type.startsWith('image')) || 
                         (value.mimeType && value.mimeType.startsWith('image/')); // בדיקה אם זה סוג תמונה
     
-        return isImage || validFileTypes.includes(value.mimeType) ? '' : 'סוג קובץ לא נתמך.';
+        return isImage || validFileTypes.includes(value.type) ? '' : 'סוג קובץ לא נתמך.';
     }
 
 };

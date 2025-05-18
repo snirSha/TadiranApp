@@ -6,6 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import FloatingButton from '../components/FloatingButton';
 import theme from "../theme";
+import { db, collection, onSnapshot } from "../config/firebaseConfig"; 
 
 const WarrantyListScreen = () => {
     const { userToken } = useContext(AuthContext);
@@ -37,26 +38,19 @@ const WarrantyListScreen = () => {
 
         fetchWarranties();
 
-        //Phase 2: show updated warranties
-        const socket = new WebSocket("ws://192.168.1.157:8080");//localhost will not work for mobile
-
-        socket.onmessage = (event) => {
-            const updatedWarranty = JSON.parse(event.data);
-            //get from websocket the peocessed date and the status and set the right warranty
+        //Phase 2: show updated warranties, listening to firebase changes
+        const unsubscribe = onSnapshot(collection(db, "warranties"), (snapshot) => {
             setWarranties((prevWarranties) => {
                 return prevWarranties.map((w) => {
-                    return w._id === updatedWarranty._id 
-                        ? { ...w, status: updatedWarranty.status, processDate: updatedWarranty.processDate } 
+                    const updatedWarranty = snapshot.docs.find(doc => doc.id === w._id);
+                    return updatedWarranty
+                        ? { ...w, ...updatedWarranty.data() } // מיזוג השינויים כמו ב-WebSocket
                         : w;
                 });
             });
-        };
-
-        // close the socket connection when the component unmounts
-        return () => {
-            socket.close();
-        };
-
+        });
+    
+        return () => unsubscribe();
     }, []);
 
     const getStatusAttributes = (status) => {

@@ -2,7 +2,7 @@ import api from './api';
 
 const createWarranty = async (warrantyData) => {
     try {
-        console.log("warrantyData: ",warrantyData);
+        // console.log("warrantyData: ",warrantyData);
         const response = await api.post('/warranties', warrantyData, {
             headers: {
                 'Content-Type': 'multipart/form-data', 

@@ -18,12 +18,12 @@ const LoginScreen = () => {
         try {
             setLoading(true);
             const token = await authService.login(formData.email, formData.password);
-            console.log("Login Token:", token);
+            // console.log("Login Token:", token);
 
             if (token) {
                 await AsyncStorage.setItem("userToken", token); 
                 setUserToken(token); 
-                console.log("✅ Navigating to WarrantyForm...");
+                // console.log("✅ Navigating to WarrantyForm...");
                 navigation.navigate("WarrantyForm");
             } else {
                 setErrorMessage("שגיאה בהתחברות, נסה שוב.");

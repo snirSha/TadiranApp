@@ -1,6 +1,8 @@
 import Warranty from "../models/warrantyModel.js";
 import path from "path";
 import * as fs from "fs";
+import db from "../config/firebaseConfig.js"; 
+import { Timestamp } from "firebase/firestore";
 
 const addWarranty = async (userId, warrantyData) => {
     // Create and save the warranty
@@ -12,7 +14,9 @@ const addWarranty = async (userId, warrantyData) => {
         invoiceUpload: warrantyData.invoiceFilePath, // Save the file path in the warranty data
         extractedDate: warrantyData.extractedDate, // Save the extracted date
     });
-    await warranty.save();
+    await warranty.save(); //Updated mongoDB
+
+    await syncWarrantyWithFirebase(warranty); //Update Firebase
 
     return warranty;
 }
@@ -30,13 +34,36 @@ const getWarrantyById = async (warrantyId) => {//Gets warranty by warranty Id fo
 
 //For admin only, can delete few records at once
 const deleteWarranties = async (warrantyIds) => {
+    const warrantiesToDelete = await Warranty.find({ _id: { $in: warrantyIds } });
+
     const result = await Warranty.deleteMany({ _id: {$in: warrantyIds} });
+
+    if (result.deletedCount > 0) {
+        // delete from firebase
+        await Promise.all(
+            warrantyIds.map((id) => db.collection("warranties").doc(id.toString()).delete())
+        );
+
+        // delete from uploads
+        await Promise.all(
+            warrantiesToDelete.map(({ invoiceUpload }) => {
+                if (invoiceUpload && fs.existsSync(invoiceUpload)) {
+                    console.log(`Deleting file: ${invoiceUpload}`);
+                    return fs.promises.unlink(invoiceUpload);
+                }
+            })
+        );
+    }
+
+
     return result.deletedCount > 0 ? warrantyIds : null;
 }
 
 //For admin and user after proccessing the file with OCR
 const updateWarranty = async (warrantyId, updateFields) => {
-    return await Warranty.findByIdAndUpdate(warrantyId, updateFields, { new: true });
+    const warranty = await Warranty.findByIdAndUpdate(warrantyId, updateFields, { new: true });
+    if (warranty) await syncWarrantyWithFirebase(warranty); //Update Firebase
+    return warranty;
 };
 
 //Only for admin-panel
@@ -66,5 +93,20 @@ const getWarrantyFilePath = async (warrantyId) => {
     return filePath;
 };
 
+
+const syncWarrantyWithFirebase = async (warranty) => {
+    // console.log("warranty in backend:  ",warranty);
+    await db.collection("warranties").doc(warranty._id.toString()).set({
+        userId: warranty.userId.toString(),
+        clientName: warranty.clientName,
+        productInfo: warranty.productInfo,
+        installationDate: warranty.installationDate 
+            ? new Date(warranty.installationDate).toISOString()
+            : null,
+        status: warranty.status,
+        invoiceUpload: warranty.invoiceUpload,
+        extractedDate: warranty.extractedDate
+    });
+};
 
 export { addWarranty, getWarranties, getWarrantyById, deleteWarranties, updateWarranty, getAllWarranties, getWarrantyFilePath};

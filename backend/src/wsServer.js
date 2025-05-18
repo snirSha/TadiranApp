@@ -1,4 +1,4 @@
-//WebSocket
+//WebSocket   can be deleted if firebase is working
 import { WebSocketServer } from "ws";
 const wss = new WebSocketServer({ port: 8080 });
 
