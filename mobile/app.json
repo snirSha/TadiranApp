@@ -14,6 +14,12 @@
       "eas": {
         "projectId": "cc3309b7-a65e-4e33-a028-5db6bc9f13b7"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "com.snirsha.tadiraninstallersapp",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     }
   }
 }
