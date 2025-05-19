@@ -11,7 +11,11 @@ cd TadiranApp/mobile
 npm install
 ```
 
-Set up environment variables: EXPO_PUBLIC_API_URL=http://localhost:4000/api
+Set up environment variables: 
+
+```sh
+EXPO_PUBLIC_API_URL=http://localhost:4000/api
+```
 
 ## Development
 

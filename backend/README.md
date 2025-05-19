@@ -12,12 +12,14 @@ npm install
 ```
 
 Set up environment variables: 
+
+```sh
     PORT=4000
     MONGO_URI=mongodb://localhost:27017/tadiran
     JWT_SECRET=your_jwt_secret
     ADMIN_EMAILS=admin@tadiran.com,manager@tadiran.com
     FILES_PATH=http://localhost:4000/uploads/invoices
-
+```
 ## Development
 
 Start the application in development mode by running:

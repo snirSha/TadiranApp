@@ -11,7 +11,11 @@ cd TadiranApp/admin
 npm install
 ```
 
-Set up environment variables: VITE_API_URL=http://localhost:4000/api
+Set up environment variables: 
+
+```sh
+VITE_API_URL=http://localhost:4000/api
+```
 
 ## Development
 
