@@ -1,7 +1,9 @@
-const apiUrl = import.meta.env.VITE_API_URL || "https://tadiran-backend.onrender.com/api";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export const authProvider = {
+    
     login: async ({ email, password }: { email: string; password: string }) => {
+        console.log("API URL:", apiUrl);
         console.log("Login email:", email, " pass: ", password);
         const response = await fetch(`${apiUrl}/auth/login`, {
             method: "POST",

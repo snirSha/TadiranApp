@@ -14,7 +14,7 @@ npm install
 Set up environment variables: 
 
 ```sh
-VITE_API_URL="https://tadiran-backend.onrender.com/api"
+VITE_API_URL=https://tadiran-backend.onrender.com/api
 ```
 
 ## Development

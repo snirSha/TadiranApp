@@ -14,7 +14,7 @@ npm install
 Set up environment variables: 
 
 ```sh
-EXPO_PUBLIC_API_URL="https://tadiran-backend.onrender.com/api"
+EXPO_PUBLIC_API_URL=https://tadiran-backend.onrender.com/api
 ```
 
 ## Development
