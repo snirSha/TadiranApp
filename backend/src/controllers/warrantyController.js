@@ -4,7 +4,7 @@ import Warranty from "../models/warrantyModel.js";
 import path from "path"; 
 
 const addWarrantyController = async (req, res, next) => {
-    console.log("am I her in controller?");
+    // console.log("am I her in controller?");
     const userId = req.user.id; // Get userId from the authenticated user
     const { clientName, productInfo, installationDate } = req.body; // Extract fields from request body
     const invoiceFilePath = req.file ? req.file.path : null;// Extract the file path of the uploaded invoice

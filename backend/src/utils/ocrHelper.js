@@ -1,4 +1,4 @@
-import tesseract from 'node-tesseract-ocr';
+import Tesseract from 'tesseract.js';
 import sharp from 'sharp'; // For image preprocessing
 import path from 'path';
 import fs from 'fs';
@@ -34,7 +34,9 @@ const extractDates = async (inputPath) => {
         await preprocessImage(inputPath, processedPath);
 
         // Recognize text using Tesseract
-        const text = await tesseract.recognize(processedPath, config);
+        const { data: { text } } = await Tesseract.recognize(processedPath, "eng", {
+            logger: (m) => console.log(m),
+        });
 
         // Extract dates using regex DD/MM/YYYY
         const dateRegex = /\b\d{1,2}[-\/.]\d{1,2}[-\/.]\d{2,4}\b/g;
@@ -52,7 +54,7 @@ const extractDates = async (inputPath) => {
         // Convert the first extracted date to UTC, no time zone shift
         if (dates && dates.length > 0) {
             const [day, month, year] = dates[0].split(/[-\/.]/).map(Number);
-            const extractedDate = new Date(Date.UTC(year, month - 1, day)); // Construct the date as UTC
+            const extractedDate = new Date(Date.UTC(year, month - 1, day));
             return [extractedDate];
         }
         return null;

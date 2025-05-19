@@ -19,7 +19,6 @@ if(!fs.existsSync(uploadPath)){
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         // console.log("Received file:", file);
-        console.log("am I her in nulter?",file);
         if (!file) {
             console.error("No file received!");
             return cb(new Error("No file received"), null);
