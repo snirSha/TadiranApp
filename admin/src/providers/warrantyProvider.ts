@@ -1,7 +1,7 @@
 import simpleRestProvider from "ra-data-simple-rest";
 import type { DataProvider, RaRecord, Identifier, DeleteManyParams, DeleteManyResult, GetOneParams, DeleteParams, DeleteResult} from "react-admin";
 
-const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+const apiUrl = import.meta.env.VITE_API_URL || "https://tadiran-backend.onrender.com/api";
 
 const httpClient = (url: string, options: any = {}) => {
     const token = localStorage.getItem("token");
@@ -27,7 +27,7 @@ export const getHeaders = () => ({
 });
 
 export const getDownloadUrl = async (warrantyId: string): Promise<string> => {
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+    const apiUrl = import.meta.env.VITE_API_URL || "https://tadiran-backend.onrender.com/api";
     return `${apiUrl}/warranties/${warrantyId}/download`; 
 };
 

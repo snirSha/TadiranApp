@@ -14,7 +14,7 @@ npm install
 Set up environment variables: 
 
 ```sh
-VITE_API_URL=http://localhost:4000/api
+VITE_API_URL="https://tadiran-backend.onrender.com/api"
 ```
 
 ## Development
@@ -25,7 +25,7 @@ Start the application in development mode by running:
 npm run dev
 ```
 
-The application will be accessible at http://localhost:5173 by default.
+The application will be accessible at https://tadiran-admin.onrender.com by default.
 
 ## Production
 
@@ -36,4 +36,4 @@ npm run build
 npm run serve
 ```
 
-This will serve the contents of the dist folder at http://localhost:4173.
+This will serve the contents of the dist folder at https://tadiran-admin.onrender.com.

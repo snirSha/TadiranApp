@@ -9,7 +9,7 @@ const options = {
             version: "1.0.0",
             description: "API documentation for the backend",
         },
-        servers: [{ url: "http://localhost:4000/api" }],
+        servers: [{ url: "https://tadiran-backend.onrender.com/api" }],
         components: {
             schemas: {
                 Warranty: {

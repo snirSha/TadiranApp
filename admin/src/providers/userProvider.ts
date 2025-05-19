@@ -1,7 +1,7 @@
 import { CreateResult, DataProvider, GetManyReferenceResult, GetManyResult, Identifier, RaRecord, UpdateManyResult } from "react-admin";
 import simpleRestProvider from "ra-data-simple-rest";
 
-const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+const apiUrl = import.meta.env.VITE_API_URL || "https://tadiran-backend.onrender.com/api";
 
 const httpClient = (url: string, options: any = {}) => {
     const token = localStorage.getItem("token");

@@ -34,9 +34,7 @@ const extractDates = async (inputPath) => {
         await preprocessImage(inputPath, processedPath);
 
         // Recognize text using Tesseract
-        const { data: { text } } = await Tesseract.recognize(processedPath, "eng", {
-            logger: (m) => console.log(m),
-        });
+        const { data: { text } } = await Tesseract.recognize(processedPath, "eng");
 
         // Extract dates using regex DD/MM/YYYY
         const dateRegex = /\b\d{1,2}[-\/.]\d{1,2}[-\/.]\d{2,4}\b/g;

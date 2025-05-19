@@ -1,4 +1,4 @@
-const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+const apiUrl = import.meta.env.VITE_API_URL || "https://tadiran-backend.onrender.com/api";
 
 export const authProvider = {
     login: async ({ email, password }: { email: string; password: string }) => {
