@@ -2,6 +2,7 @@ const apiUrl = import.meta.env.VITE_API_URL || "https://tadiran-backend.onrender
 
 export const authProvider = {
     login: async ({ email, password }: { email: string; password: string }) => {
+        console.log("Login email:", email, " pass: ", password);
         const response = await fetch(`${apiUrl}/auth/login`, {
             method: "POST",
             body: JSON.stringify({ email, password }),
@@ -9,10 +10,11 @@ export const authProvider = {
         });
 
         const data = await response.json();
+        console.log("Login Response Data:", data);
         if (!data.token) throw new Error("Invalid credentials");
 
         localStorage.setItem("token", data.token);
-
+        console.log("Saved Token:", localStorage.getItem("token"));
         // Check if the user have the right admin credentials
         const decodedToken = JSON.parse(atob(data.token.split(".")[1]));
         if (!decodedToken.isAdmin) {
