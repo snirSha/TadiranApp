@@ -81,8 +81,9 @@ const getWarrantyFilePath = async (warrantyId) => {
         return null;
     }
 
-    const filePath = path.resolve(warranty.invoiceUpload);
-    console.log("🔍 File Path Resolved:", filePath);
+    const fileName = path.basename(warranty.invoiceUpload);
+    const filePath = path.join(__dirname, "../../uploads/invoices", fileName);
+    console.log("File Path Resolved:", filePath);
 
     if (!fs.existsSync(filePath)) {
         console.error(`File does not exist on server: ${filePath}`);

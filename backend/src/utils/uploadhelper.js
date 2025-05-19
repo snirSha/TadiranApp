@@ -2,6 +2,8 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+dotenv.config();
 
 // Define __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -27,8 +29,14 @@ const storage = multer.diskStorage({
     }
     ,
     filename: (req, file, cb) => {
-        console.log("Generated Filename:", `${Date.now()}-${file.originalname}`);
-        cb(null, `${Date.now()}-${file.originalname}`)
+        const fileName = `${Date.now()}-${file.originalname}`;
+        const fileUrl = `${process.env.FILES_PATH}/${fileName}`;
+
+        console.log("Generated Filename:", fileName);
+        console.log("File URL:", fileUrl); 
+
+        req.fileUrl = fileUrl; //save this url for future download from adming panel
+        cb(null, fileName);
     },
 });
 
