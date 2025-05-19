@@ -6,6 +6,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [react()],
   server: {
     host: true,
+    historyApiFallback: true
   },
   build: {
     sourcemap: mode === "development",
