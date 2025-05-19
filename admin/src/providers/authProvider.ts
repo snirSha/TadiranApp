@@ -26,10 +26,10 @@ export const authProvider = {
     checkAuth: () => {
         const token = localStorage.getItem("token");
         if (!token) {
-            window.location.href = "/login";
-            return Promise.reject("No token, redirecting to login");
+            return Promise.reject({ redirectTo: "/login" }); // נותן ל-React Admin לבצע את ההפניה
         }
         return Promise.resolve();
+
     },
     checkError: (error: { status?: number }) => {//like authGuard in frontend
         if (error.status === 401 || error.status === 403) {
