@@ -2,7 +2,6 @@ import Warranty from "../models/warrantyModel.js";
 import path from "path";
 import * as fs from "fs";
 import db from "../config/firebaseConfig.js"; 
-import { Timestamp } from "firebase/firestore";
 
 const addWarranty = async (userId, warrantyData) => {
     // Create and save the warranty

@@ -59,7 +59,7 @@ const deleteUsersController = async (req, res, next) => {
             return res.status(404).json({ success: false, message: "No users found to delete, possibly linked to warranties." });
         }
 
-        res.status(200).json({ success: true, ids: deletedIds }); // ✅ החזרת `success: true` בפורמט תקין
+        res.status(200).json({ success: true, ids: deletedIds });
     } catch (error) {
         console.error("Error deleting users:", error);
         res.status(500).json({ success: false, message: "Error deleting users" });

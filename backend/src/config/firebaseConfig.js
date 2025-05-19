@@ -1,6 +1,7 @@
 import admin from "firebase-admin";
 import fs from "fs";
 
+//For updating admin and mobile records when there is a change
 const serviceAccount = JSON.parse(fs.readFileSync("./src/config/serviceAccount.json", "utf8"));
 
 admin.initializeApp({

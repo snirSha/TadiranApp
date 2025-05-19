@@ -37,10 +37,10 @@ const fileFilter = (req, file, cb) => {
     console.log("Received file MIME type:", file.mimetype);
     const allowedMimeTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
     if (allowedMimeTypes.includes(file.mimetype)) {
-        cb(null, true); // קובץ נתמך
+        cb(null, true); // supported file
     } else {
         console.error("Unsupported file type:", file.mimetype);
-        cb(new Error("Unsupported file type"), false); // קובץ לא נתמך
+        cb(new Error("Unsupported file type"), false); // file not supposeted
     }
 };
 

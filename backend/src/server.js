@@ -7,6 +7,7 @@ import warrantyRoutes from './routes/warrantyRoutes.js';
 import errorHandler from './middleware/errorMiddleware.js';
 import cors from 'cors';
 import db from "./config/firebaseConfig.js";
+import swaggerSetup from "./config/swagger.js";
 
 dotenv.config();
 const app = express();
@@ -32,6 +33,9 @@ app.use('/api/warranties', warrantyRoutes);
 
 // Use the error-handling middleware
 app.use(errorHandler);
+
+//init swagger after api calls
+swaggerSetup(app);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, ()=>{
