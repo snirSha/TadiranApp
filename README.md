@@ -17,7 +17,7 @@ TadiranApp consists of multiple components working together:
 - **Admin Panel**: [Admin Dashboard](https://tadiran-admin.onrender.com)
 - **Swagger API Docs**: [API Documentation](https://tadiran-backend.onrender.com/api-docs/)
 - **Live Backend**: [Render Deployment](https://tadiran-backend.onrender.com)
-- **Mobile App (Expo/APK)**: [Download TadiranApp](https://expo.dev/@tadiran)
+- **Mobile App (Expo/APK)**: [Download TadiranApp](https://expo.dev/accounts/snirsha/projects/tadiran-mobile-expo/builds/e7862d4e-ec77-417c-8b80-a47e230dae34)
 
 ## Admin Login Credentials
 

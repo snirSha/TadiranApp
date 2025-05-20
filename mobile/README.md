@@ -31,9 +31,13 @@ Then you will see link for web and barcode for mobile app
 Build the application in production mode by running:
 
 ```sh
-expo build:android
-expo build:ios
+eas build --profile production --platform android
+eas build --profile production --platform ios
 ```
 
 Follow the prompts to configure the build.
 Once the build is complete, download the APK (for Android) or the IPA (for iOS) file.
+
+## Expo Build Links
+
+Android: https://expo.dev/accounts/snirsha/projects/tadiran-mobile-expo/builds/e7862d4e-ec77-417c-8b80-a47e230dae34
