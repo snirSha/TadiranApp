@@ -12,7 +12,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "cc3309b7-a65e-4e33-a028-5db6bc9f13b7"
+        "projectId": "4689450c-bb99-41df-aae6-0211c489ac51"
       }
     },
     "ios": {
@@ -20,6 +20,8 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
-    }
+    },
+    "owner": "snirsha",
+    "slug": "tadiran-mobile-expo"
   }
 }
